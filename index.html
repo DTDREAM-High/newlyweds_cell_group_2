@@ -51,7 +51,7 @@
       cursor: pointer;
     }
 
-    /* 1열 레이아웃 배치 (2열에서 1열로 변경) */
+    /* 1열 레이아웃 배치 */
     .family-list {
       display: flex;
       flex-direction: column;
@@ -186,7 +186,7 @@
   </main>
 
   <script>
-    // 변경된 구글 스프레드시트 TSV URL
+    // 구글 스프레드시트 TSV URL
     const TSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRI8K7jpTQfDdlpP9t1fViRwDdTPpjFSbUz7qEATW7Jb6Ua5e8OUBrOlCCNYwMzyCnoQV7X3u1rJavV/pub?gid=0&single=true&output=tsv";
 
     let globalData = [];
@@ -270,15 +270,15 @@
       priorityContainer.innerHTML = '';
       generalContainer.innerHTML = '';
 
-      // '우선' 또는 status/status_type 등에 '우선' 또는 '긴급'이 포함되어 있는지 확인
+      // '우선' 키워드만 확인하여 분류 (긴급 제외)
       const priorityItems = items.filter(i => 
-        (i.status && (i.status.includes('우선') || i.status.includes('긴급'))) ||
+        (i.status && i.status.includes('우선')) ||
         (i.group && i.group.includes('우선'))
       );
       
       const generalItems = items.filter(i => !priorityItems.includes(i));
 
-      // 1. 우선 기도 목록 출력 ([남편]/[아내] 등 group 표시 반영)
+      // 1. 우선 기도 목록 출력 (태그 [남편], [아내] 등 정상 표기)
       if (priorityItems.length === 0) {
         priorityContainer.innerHTML = '<p style="color:#888; font-size:0.9rem;">등록된 우선 기도가 없습니다.</p>';
       } else {
@@ -299,12 +299,11 @@
       window.scrollTo(0, 0);
     }
 
-    // 기도 항목 엘리먼트 생성 (우선 기도 시에도 [남편/아내] 표시)
+    // 기도 항목 엘리먼트 생성 ([남편], [아내] 등 group 태그 포함)
     function createPrayerItemElement(item, isPriority) {
       const div = document.createElement('div');
       div.className = `prayer-item ${isPriority ? 'priority-item' : ''}`;
 
-      // group 컬럼 값을 이용하여 [남편], [아내], [공동/가정] 등 표기
       const targetTag = item.group ? `<span class="target-tag">[${item.group}]</span>` : '';
 
       div.innerHTML = `
