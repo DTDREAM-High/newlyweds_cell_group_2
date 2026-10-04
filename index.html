@@ -129,7 +129,6 @@
 
     /* 레이아웃 & 카드 */
     .today-grid { display: grid; grid-template-columns: 1fr; gap: 10px; margin-bottom: 10px; }
-    /* 1열 배치를 위해 grid-template-columns를 1fr로 변경 */
     .member-grid { display: grid; grid-template-columns: 1fr; gap: 10px; }
 
     .member-card {
@@ -148,14 +147,30 @@
       background: linear-gradient(135deg, #FFFFFF 0%, #FFFBEB 100%);
     }
 
-    .member-info { display: flex; flex-direction: column; gap: 4px; flex: 1; min-width: 0; }
-    .member-name { font-size: 16px; font-weight: 700; color: var(--text-main); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    /* 이름과 뱃지가 나란히 오도록 수정 */
+    .member-info { 
+      display: flex; 
+      flex-direction: row; 
+      align-items: center; 
+      gap: 8px; 
+      flex: 1; 
+      min-width: 0; 
+    }
+    .member-name { 
+      font-size: 16px; 
+      font-weight: 700; 
+      color: var(--text-main); 
+      white-space: nowrap; 
+      overflow: hidden; 
+      text-overflow: ellipsis; 
+      flex-shrink: 0;
+    }
     .today-highlight .member-name { font-size: 18px; }
 
     .member-tags { display: flex; align-items: center; gap: 4px; flex-wrap: wrap; }
-    .badge-role { font-size: 10px; font-weight: 700; color: var(--leader-gold); background-color: var(--leader-bg); padding: 2px 6px; border-radius: 4px; }
-    .badge-urgent-card { font-size: 10px; font-weight: 700; color: var(--urgent-red); background-color: #FEE2E2; padding: 2px 6px; border-radius: 4px; }
-    .badge-today { background: #DBEAFE; color: #1E40AF; border: 1px solid #BFDBFE; font-weight: 700; font-size: 11px; padding: 2px 8px; border-radius: 6px; }
+    .badge-role { font-size: 10px; font-weight: 700; color: var(--leader-gold); background-color: var(--leader-bg); padding: 2px 6px; border-radius: 4px; white-space: nowrap; }
+    .badge-urgent-card { font-size: 10px; font-weight: 700; color: var(--urgent-red); background-color: #FEE2E2; padding: 2px 6px; border-radius: 4px; white-space: nowrap; }
+    .badge-today { background: #DBEAFE; color: #1E40AF; border: 1px solid #BFDBFE; font-weight: 700; font-size: 11px; padding: 2px 8px; border-radius: 6px; white-space: nowrap; }
 
     .skeleton-card { background: #E2E8F0; border-radius: 14px; height: 62px; animation: pulse 1.5s infinite ease-in-out; }
     
@@ -164,7 +179,7 @@
       50% { opacity: 1; }
       100% { opacity: 0.5; }
     }
-    .member-count { font-size: 12px; font-weight: 500; color: var(--text-sub); background: var(--bg); padding: 4px 8px; border-radius: 8px; flex-shrink: 0; }
+    .member-count { font-size: 12px; font-weight: 500; color: var(--text-sub); background: var(--bg); padding: 4px 8px; border-radius: 8px; flex-shrink: 0; margin-left: 8px; }
 
     /* 상세 화면 및 그룹 박스 */
     .detail-view { 
@@ -182,6 +197,18 @@
       display: inline-block; font-size: 13px; font-weight: 700;
       color: var(--primary); background-color: var(--primary-light);
       padding: 4px 10px; border-radius: 6px; margin-bottom: 10px;
+    }
+    
+    .person-badge {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 2px 6px;
+      border-radius: 4px;
+      background-color: #E2E8F0;
+      color: #334155;
+      margin-right: 4px;
+      vertical-align: middle;
     }
 
     .prayer-group { 
@@ -239,7 +266,7 @@
   <header>
     <div class="church-info">
       <div class="sub">동탄드림교회</div>
-      <div class="title">신혼2다락방 (부부)</div>
+      <div class="title">신혼2다락방</div>
     </div>
     <button class="btn-icon-bg" id="btn-font-toggle" title="글자 크기 변경">
       <svg viewBox="0 0 24 24"><path d="M4 7V4h16v3M9 20h6M12 4v16"/></svg>
@@ -273,10 +300,10 @@
     </div>
     <div class="today-grid" id="today-grid"></div>
 
-    <!-- 전체 다락방 가정 명단 -->
+    <!-- 다락방 가정 -->
     <div class="section-label">
       <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-      다락방 전체 가정 명단
+      다락방 가정
     </div>
     <div class="member-grid" id="member-grid"></div>
   </div>
@@ -319,10 +346,8 @@
 </div>
 
 <script>
-  // 업데이트된 구글 스프레드시트 TSV 주소
   const TSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRI8K7jpTQfDdlpP9t1fViRwDdTPpjFSbUz7qEATW7Jb6Ua5e8OUBrOlCCNYwMzyCnoQV7X3u1rJavV/pub?gid=0&single=true&output=tsv";
   
-  // 가정 단위이므로 하루에 1가정씩 배정
   const SHOW_COUNT = 1; 
 
   let orderedMemberList = [];
@@ -407,12 +432,11 @@
       if (cols.length >= 2) {
         result.push({
           role: cols[0] ? cols[0].trim() : "순원",
-          name: cols[1] ? cols[1].trim() : "", // 가정 명칭
-          person: cols[2] ? cols[2].trim() : "", // 남편/아내 구분 용도 (있을 경우)
-          group: cols[3] ? cols[3].trim() : "기도제목",
-          title: cols[4] ? cols[4].trim() : "",
-          detail: cols[5] ? cols[5].trim() : "",
-          status: cols[6] ? cols[6].trim().toLowerCase() : (cols[5] ? cols[5].trim().toLowerCase() : "active")
+          name: cols[1] ? cols[1].trim() : "", 
+          group: cols[2] ? cols[2].trim() : "가정 기도제목", // 남편 / 아내 / 가정 등 구분
+          title: cols[3] ? cols[3].trim() : "",
+          detail: cols[4] ? cols[4].trim() : "",
+          status: cols[5] ? cols[5].trim().toLowerCase() : "active"
         });
       }
     }
@@ -548,18 +572,17 @@
 
     prayerContainer.innerHTML = '';
 
-    // 긴급 -> 우선 기도 제목 영역 처리 (남편/아내 정보 구분을 위해 person 또는 group 표시)
+    // 우선 기도 영역 (남편/아내/공동 등 구분을 뱃지로 명확히 표시)
     if (urgentItems.length > 0) {
       const urgentGroupEl = document.createElement('div');
       urgentGroupEl.className = 'prayer-group is-urgent';
       let urgentHTML = `<div class="group-tag urgent-tag">🚨 우선 기도</div>`;
       urgentItems.forEach(p => {
-        // 남편/아내 표시 구분 추가
-        const personTag = p.person ? `[${p.person}] ` : (p.group ? `[${p.group}] ` : '');
+        const badgeLabel = p.group ? `<span class="person-badge">${p.group}</span>` : '';
         urgentHTML += `
           <div class="prayer-item">
             <div class="prayer-title-row">
-              <div class="prayer-title" style="color: var(--urgent-red);">${personTag}${p.title || '우선 기도제목'}</div>
+              <div class="prayer-title" style="color: var(--urgent-red);">${badgeLabel}${p.title || '우선 기도제목'}</div>
             </div>
             <div class="prayer-detail">${formatDetailText(p.detail)}</div>
           </div>
@@ -569,18 +592,18 @@
       prayerContainer.appendChild(urgentGroupEl);
     }
 
+    // 일반 기도 영역
     Object.keys(groups).forEach(gName => {
       const groupEl = document.createElement('div');
       groupEl.className = 'prayer-group';
       let itemsHTML = `<div class="group-tag">📌 ${gName}</div>`;
       groups[gName].forEach(p => {
         const isDone = p.status === 'done' || p.status === '완료' || p.status === '응답완료';
-        const personPrefix = p.person ? `[${p.person}] ` : '';
         if (isDone) {
           itemsHTML += `
             <div class="prayer-item is-done">
               <div class="prayer-title-row accordion-header" onclick="toggleAccordion(this)">
-                <div class="prayer-title">${personPrefix}${p.title || gName}</div>
+                <div class="prayer-title">${p.title || gName}</div>
                 <div class="badge-done-container">
                   <span class="badge-done">✓ 응답완료</span>
                   <svg class="arrow-icon" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg>
@@ -595,7 +618,7 @@
           itemsHTML += `
             <div class="prayer-item">
               <div class="prayer-title-row">
-                <div class="prayer-title">${personPrefix}${p.title || gName}</div>
+                <div class="prayer-title">${p.title || gName}</div>
               </div>
               <div class="prayer-detail">${formatDetailText(p.detail)}</div>
             </div>
