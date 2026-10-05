@@ -15,21 +15,20 @@
 
   <style>
     :root {
-      /* 세련된 모던 딥 인디고 & 베이지 웜 테마 */
-      --primary: #1E40AF;          /* 진하고 고급스러운 인디고 블루 */
+      --primary: #1E40AF;          /* 진한 인디고 블루 */
       --primary-light: #EFF6FF;    /* 오늘 카드 강조 배경 */
-      --bg: #F8FAFC;               /* 깨끗한 배경 */
+      --bg: #F8FAFC;               /* 배경색 */
       --card-bg: #FFFFFF;          
       
-      --text-main: #0F172A;        /* 선명한 딥 다크 네이비 */
-      --text-sub: #64748B;         /* 차분한 슬레이트 그레이 */
+      --text-main: #0F172A;        /* 메인 다크 네이비 */
+      --text-sub: #64748B;         /* 슬레이트 그레이 */
       
       /* 포인트 및 상태 컬러 */
       --accent-green: #059669;     /* 응답 완료 */
-      --urgent-red: #DC2626;       /* 우선 기도 */
+      --urgent-red: #DC2626;       /* 우선/긴급 기도 */
       --urgent-bg: #FEF2F2;
       --urgent-border: #FCA5A5;
-      --leader-gold: #D97706;      /* 순장 가정 표시 */
+      --leader-gold: #D97706;      /* 순장 가정 */
       --leader-bg: #FEF3C7;
       
       --radius: 16px;
@@ -121,16 +120,60 @@
 
     .view-section { padding: 0 20px 30px; flex: 1; }
     .section-label {
-      font-size: 15px; font-weight: 700; margin: 18px 0 10px; color: var(--text-sub);
+      font-size: 15px; font-weight: 700; margin: 20px 0 10px; color: var(--text-sub);
       display: flex; align-items: center; gap: 6px;
     }
     .section-label svg { width: 18px; height: 18px; stroke: currentColor; fill: none; stroke-width: 2; }
     .section-label.today-label { color: var(--primary); }
+    .section-label.monthly-label { color: #1E40AF; }
 
     /* 레이아웃 & 카드 */
     .today-grid { display: grid; grid-template-columns: 1fr; gap: 10px; margin-bottom: 10px; }
+    .monthly-container { display: flex; flex-direction: column; gap: 10px; margin-bottom: 10px; }
     .member-grid { display: grid; grid-template-columns: 1fr; gap: 10px; }
 
+    /* 이달의 다락방 기도제목 카드 스타일 */
+    .monthly-card {
+      background-color: var(--card-bg);
+      border: 1px solid #E2E8F0;
+      border-radius: 14px;
+      padding: 14px 16px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.02);
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .monthly-card.is-urgent {
+      background-color: var(--urgent-bg);
+      border: 1.5px solid var(--urgent-border);
+    }
+    .monthly-card-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .monthly-badge-urgent {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--urgent-red);
+      background-color: #FEE2E2;
+      padding: 2px 8px;
+      border-radius: 6px;
+      white-space: nowrap;
+    }
+    .monthly-card-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+    .monthly-card-detail {
+      font-size: 14px;
+      color: var(--text-sub);
+      line-height: 1.5;
+      white-space: pre-line;
+    }
+
+    /* 가정 멤버 카드 */
     .member-card {
       background-color: var(--card-bg); border: 1px solid #E2E8F0;
       border-radius: 14px; padding: 12px 14px;
@@ -147,7 +190,6 @@
       background: linear-gradient(135deg, #FFFFFF 0%, #FFFBEB 100%);
     }
 
-    /* 이름과 뱃지가 나란히 오도록 수정 */
     .member-info { 
       display: flex; 
       flex-direction: row; 
@@ -167,10 +209,11 @@
     }
     .today-highlight .member-name { font-size: 18px; }
 
+    /* 뱃지 표준 스타일 */
     .member-tags { display: flex; align-items: center; gap: 4px; flex-wrap: wrap; }
     .badge-role { font-size: 10px; font-weight: 700; color: var(--leader-gold); background-color: var(--leader-bg); padding: 2px 6px; border-radius: 4px; white-space: nowrap; }
     .badge-urgent-card { font-size: 10px; font-weight: 700; color: var(--urgent-red); background-color: #FEE2E2; padding: 2px 6px; border-radius: 4px; white-space: nowrap; }
-    .badge-today { background: #DBEAFE; color: #1E40AF; border: 1px solid #BFDBFE; font-weight: 700; font-size: 10px; padding: 2px 6px; border-radius: 4px; white-space: nowrap; }
+    .badge-today { background: #DBEAFE; color: #1E40AF; border: 1px solid #BFDBFE; font-weight: 700; font-size: 11px; padding: 2px 8px; border-radius: 6px; white-space: nowrap; }
 
     .skeleton-card { background: #E2E8F0; border-radius: 14px; height: 62px; animation: pulse 1.5s infinite ease-in-out; }
     
@@ -257,7 +300,8 @@
     .font-large .member-name { font-size: 19px; }
     .font-large .prayer-title { font-size: 19px; }
     .font-large .prayer-detail { font-size: 17px; }
-    .font-large .group-tag { font-size: 14px; }
+    .font-large .monthly-card-title { font-size: 18px; }
+    .font-large .monthly-card-detail { font-size: 16px; }
   </style>
 </head>
 <body>
@@ -278,7 +322,7 @@
     <div class="temp-header">
       <div class="temp-title">
         <svg viewBox="0 0 24 24"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 3z"/></svg>
-        <span>다락방을 위한 기도온도</span>
+        <span>우리 다락방 기도 온도</span>
       </div>
       <div class="temp-value" id="temp-display">36.5°C</div>
     </div>
@@ -287,7 +331,7 @@
     </div>
     <button class="btn-pray-today" id="btn-pray">
       <svg viewBox="0 0 24 24"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg>
-      <span>오늘 기도 함께해요</span>
+      <span>오늘 기도 함께해요 (완료하기)</span>
     </button>
   </div>
 
@@ -300,10 +344,17 @@
     </div>
     <div class="today-grid" id="today-grid"></div>
 
-    <!-- 다락방 가정 -->
+    <!-- 이달의 다락방 기도제목 -->
+    <div class="section-label monthly-label">
+      <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+      이달의 다락방 기도제목
+    </div>
+    <div class="monthly-container" id="monthly-container"></div>
+
+    <!-- 전체 다락방 기도 -->
     <div class="section-label">
       <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-      다락방 가정
+      전체 가정 기도제목
     </div>
     <div class="member-grid" id="member-grid"></div>
   </div>
@@ -346,14 +397,20 @@
 </div>
 
 <script>
-  const TSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRI8K7jpTQfDdlpP9t1fViRwDdTPpjFSbUz7qEATW7Jb6Ua5e8OUBrOlCCNYwMzyCnoQV7X3u1rJavV/pub?gid=0&single=true&output=tsv";
-  
-  const SHOW_COUNT = 1; 
+  // 시트 연동 URL 설정
+  const CONFIG = {
+    // 1번째 시트: 가정별/멤버별 기도제목
+    FAMILY_SHEET_URL: "https://docs.google.com/spreadsheets/d/e/2PACX-1vRI8K7jpTQfDdlpP9t1fViRwDdTPpjFSbUz7qEATW7Jb6Ua5e8OUBrOlCCNYwMzyCnoQV7X3u1rJavV/pub?gid=0&single=true&output=tsv",
+    
+    // 2번째 시트: 이달의 다락방 기도제목 (게시된 2번째 시트의 GID로 변경해주세요)
+    MONTHLY_PRAYER_SHEET_URL: "https://docs.google.com/spreadsheets/d/e/2PACX-1vRI8K7jpTQfDdlpP9t1fViRwDdTPpjFSbUz7qEATW7Jb6Ua5e8OUBrOlCCNYwMzyCnoQV7X3u1rJavV/pub?gid=2049361578&single=true&output=tsv"
+  };
 
   let orderedMemberList = [];
   let prayerData = {};
   let rolesMap = {};
   let todayMemberNames = []; 
+  let monthlyPrayers = [];
   let currentMemberIndex = 0;
   let currentTodayIndex = 0;
   let isTodayOnlyMode = false;
@@ -363,20 +420,12 @@
   const mainView = document.getElementById('main-view');
   const detailView = document.getElementById('detail-view');
   const todayGrid = document.getElementById('today-grid');
+  const monthlyContainer = document.getElementById('monthly-container');
   const memberGrid = document.getElementById('member-grid');
   const memberDetailName = document.getElementById('member-detail-name');
   const prayerContainer = document.getElementById('prayer-list-container');
   const tempDisplay = document.getElementById('temp-display');
   const tempBar = document.getElementById('temp-bar');
-
-  function seededRandom(seed) {
-    let s = seed % 2147483647;
-    if (s <= 0) s += 2147483646;
-    return function() {
-      s = (s * 16807) % 2147483647;
-      return (s - 1) / 2147483646;
-    };
-  }
 
   function formatDetailText(text) {
     if (!text) return '';
@@ -386,42 +435,74 @@
   function renderSkeleton() {
     todayGrid.innerHTML = '';
     memberGrid.innerHTML = '';
+    monthlyContainer.innerHTML = '';
+
     const skelToday = document.createElement('div');
     skelToday.className = 'skeleton-card';
     todayGrid.appendChild(skelToday);
 
-    for (let i = 0; i < 6; i++) {
+    const skelMonthly = document.createElement('div');
+    skelMonthly.className = 'skeleton-card';
+    monthlyContainer.appendChild(skelMonthly);
+
+    for (let i = 0; i < 5; i++) {
       const skel = document.createElement('div');
       skel.className = 'skeleton-card';
       memberGrid.appendChild(skel);
     }
   }
 
+  // 데이터 로드
   async function loadData() {
+    renderSkeleton();
+
+    // 1. 가정별 기도제목 로드
     const cachedData = localStorage.getItem('cached_prayer_tsv');
-    if (cachedData) {
-      parseTSVData(cachedData);
-    } else {
-      renderSkeleton();
+    if (cachedData) parseTSVData(cachedData);
+
+    if (CONFIG.FAMILY_SHEET_URL) {
+      try {
+        const response = await fetch(CONFIG.FAMILY_SHEET_URL);
+        if (response.ok) {
+          const tsvText = await response.text();
+          if (tsvText !== cachedData) {
+            localStorage.setItem('cached_prayer_tsv', tsvText);
+            parseTSVData(tsvText);
+          }
+        }
+      } catch (error) {
+        console.warn("가정 기도 데이터 로드 경고 (캐시 사용):", error);
+      }
     }
 
-    try {
-      const response = await fetch(TSV_URL);
-      if (!response.ok) throw new Error("네트워크 응답 오류");
-      const tsvText = await response.text();
-      
-      if (tsvText !== cachedData) {
-        localStorage.setItem('cached_prayer_tsv', tsvText);
-        parseTSVData(tsvText);
+    // 2. 이달의 다락방 기도제목 로드
+    const cachedMonthly = localStorage.getItem('cached_monthly_prayer_tsv');
+    if (cachedMonthly) parseMonthlyPrayerData(cachedMonthly);
+
+    const isPlaceholder = !CONFIG.MONTHLY_PRAYER_SHEET_URL || CONFIG.MONTHLY_PRAYER_SHEET_URL.includes("123456789");
+
+    if (!isPlaceholder) {
+      try {
+        const response = await fetch(CONFIG.MONTHLY_PRAYER_SHEET_URL);
+        if (response.ok) {
+          const text = await response.text();
+          if (text !== cachedMonthly) {
+            localStorage.setItem('cached_monthly_prayer_tsv', text);
+            parseMonthlyPrayerData(text);
+          }
+        } else {
+          if (!cachedMonthly) renderMonthlyPrayers();
+        }
+      } catch (error) {
+        console.warn("이달의 기도제목 로드 경고 (기본값/캐시 사용):", error);
+        if (!cachedMonthly) renderMonthlyPrayers();
       }
-    } catch (error) {
-      console.error(error);
-      if (!cachedData) {
-        showModal("연동 오류", "구글 시트 데이터를 불러오지 못했습니다.");
-      }
+    } else {
+      if (!cachedMonthly) renderMonthlyPrayers();
     }
   }
 
+  // 가정별 기도제목 파싱
   function parseTSVData(tsvText) {
     const lines = tsvText.split(/\r?\n/).map(line => line.trim()).filter(line => line);
     if (lines.length <= 1) return;
@@ -433,7 +514,7 @@
         result.push({
           role: cols[0] ? cols[0].trim() : "순원",
           name: cols[1] ? cols[1].trim() : "", 
-          group: cols[2] ? cols[2].trim() : "가정 기도제목", // 남편 / 아내 / 가정 등 구분
+          group: cols[2] ? cols[2].trim() : "가정 기도제목",
           title: cols[3] ? cols[3].trim() : "",
           detail: cols[4] ? cols[4].trim() : "",
           status: cols[5] ? cols[5].trim().toLowerCase() : "active"
@@ -467,47 +548,95 @@
     renderMainGrids();
   }
 
+  // 2번째 시트: 이달의 다락방 기도제목 파싱
+  function parseMonthlyPrayerData(text) {
+    const lines = text.split(/\r?\n/).map(line => line.trim()).filter(line => line);
+    monthlyPrayers = [];
+
+    if (lines.length > 1) {
+      const isTab = text.includes('\t');
+      
+      for (let i = 1; i < lines.length; i++) {
+        const cols = isTab ? lines[i].split('\t') : lines[i].split(',');
+        if (cols.length >= 2) {
+          const status = cols[0] ? cols[0].trim().toLowerCase() : "active";
+          const title = cols[1] ? cols[1].trim() : "";
+          const detail = cols[2] ? cols[2].trim() : "";
+
+          if (status !== 'done' && status !== '완료' && title !== '') {
+            monthlyPrayers.push({ status, title, detail });
+          }
+        }
+      }
+
+      monthlyPrayers.sort((a, b) => {
+        const isAUrgent = a.status === 'urgent' || a.status === '우선';
+        const isBUrgent = b.status === 'urgent' || b.status === '우선';
+        if (isAUrgent && !isBUrgent) return -1;
+        if (!isAUrgent && isBUrgent) return 1;
+        return 0;
+      });
+    }
+
+    renderMonthlyPrayers();
+  }
+
+  function renderMonthlyPrayers() {
+    monthlyContainer.innerHTML = '';
+
+    if (monthlyPrayers.length === 0) {
+      monthlyContainer.innerHTML = `
+        <div class="monthly-card">
+          <div class="monthly-card-title" style="font-size:14px; color:var(--text-sub); text-align:center;">
+            등록된 이달의 기도제목이 없습니다.
+          </div>
+        </div>
+      `;
+      return;
+    }
+
+    monthlyPrayers.forEach(item => {
+      const isUrgent = item.status === 'urgent' || item.status === '우선';
+      const card = document.createElement('div');
+      card.className = `monthly-card ${isUrgent ? 'is-urgent' : ''}`;
+
+      card.innerHTML = `
+        <div class="monthly-card-header">
+          ${isUrgent ? `<span class="monthly-badge-urgent">🚨 우선</span>` : ''}
+          <div class="monthly-card-title">${item.title}</div>
+        </div>
+        ${item.detail ? `<div class="monthly-card-detail">${formatDetailText(item.detail)}</div>` : ''}
+      `;
+
+      monthlyContainer.appendChild(card);
+    });
+  }
+
+  // 6가정이 순차적으로 순환하는 로직 (랜덤 전면 제거)
   function calculateTodayMembers() {
     const totalCount = orderedMemberList.length;
     if (totalCount === 0) return;
 
+    const baseDate = new Date(2025, 0, 1);
     const today = new Date();
-    const baseSeed = 54321;
-    const utcDays = Math.floor(Date.UTC(today.getFullYear(), today.getMonth(), today.getDate()) / (24 * 60 * 60 * 1000));
-    
-    const globalStartIndex = utcDays * SHOW_COUNT;
-    todayMemberNames = [];
+    today.setHours(0, 0, 0, 0);
 
-    for (let i = 0; i < Math.min(SHOW_COUNT, totalCount); i++) {
-      const currentIndex = globalStartIndex + i;
-      const cycleIndex = Math.floor(currentIndex / totalCount);
-      const indexInCycle = currentIndex % totalCount;
+    const diffDays = Math.floor((today - baseDate) / (1000 * 60 * 60 * 24));
+    const todayIndex = diffDays % totalCount;
 
-      const cycleRandom = seededRandom(baseSeed + cycleIndex * 88883);
-      let shuffledIndices = Array.from({ length: totalCount }, (_, k) => k);
-      
-      for (let j = shuffledIndices.length - 1; j > 0; j--) {
-        const r = Math.floor(cycleRandom() * (j + 1));
-        [shuffledIndices[j], shuffledIndices[r]] = [shuffledIndices[r], shuffledIndices[j]];
-      }
-
-      const selectedMemberIndex = shuffledIndices[indexInCycle];
-      todayMemberNames.push(orderedMemberList[selectedMemberIndex]);
-    }
+    todayMemberNames = [orderedMemberList[todayIndex]];
   }
 
   function renderMainGrids() {
     todayGrid.innerHTML = '';
     memberGrid.innerHTML = '';
 
-    // 1. 오늘의 기도 가정
     todayMemberNames.forEach(name => {
       const isLeader = rolesMap[name] === '순장' || rolesMap[name] === '순장가정';
       const hasUrgent = prayerData[name].some(p => p.status === 'urgent' || p.status === '우선');
       todayGrid.appendChild(createMemberCard(name, isLeader, rolesMap[name], hasUrgent, true));
     });
 
-    // 2. 전체 다락방 가정 목록
     orderedMemberList.forEach(name => {
       const isLeader = rolesMap[name] === '순장' || rolesMap[name] === '순장가정';
       const hasUrgent = prayerData[name].some(p => p.status === 'urgent' || p.status === '우선');
@@ -572,7 +701,6 @@
 
     prayerContainer.innerHTML = '';
 
-    // 우선 기도 영역 (남편/아내/공동 등 구분을 뱃지로 명확히 표시)
     if (urgentItems.length > 0) {
       const urgentGroupEl = document.createElement('div');
       urgentGroupEl.className = 'prayer-group is-urgent';
@@ -592,7 +720,6 @@
       prayerContainer.appendChild(urgentGroupEl);
     }
 
-    // 일반 기도 영역
     Object.keys(groups).forEach(gName => {
       const groupEl = document.createElement('div');
       groupEl.className = 'prayer-group';
@@ -633,6 +760,11 @@
     mainView.style.display = 'none';
     detailView.style.display = 'flex';
     window.scrollTo(0, 0);
+
+    // 뒤로가기 히스토리 상태 추가
+    if (!history.state || history.state.view !== 'detail') {
+      history.pushState({ view: 'detail' }, '');
+    }
   }
 
   function toggleAccordion(headerEl) {
@@ -641,10 +773,14 @@
     content.classList.toggle('open');
   }
 
-  function showMainView() {
+  function showMainView(isHistoryCall = false) {
     detailView.style.display = 'none';
     mainView.style.display = 'block';
     tempCard.style.display = 'block';
+
+    if (!isHistoryCall && history.state && history.state.view === 'detail') {
+      history.back();
+    }
   }
 
   function navigateMember(direction) {
@@ -667,6 +803,13 @@
     showModal("글자 크기 변경", isLargeFont ? "글자 크기가 확대되었습니다." : "글자 크기가 기본으로 설정되었습니다.");
   }
 
+  // 뒤로가기(popstate) 이벤트 수신
+  window.addEventListener('popstate', (e) => {
+    if (detailView.style.display === 'flex') {
+      showMainView(true);
+    }
+  });
+
   // 좌우 스와이프 제스처
   let touchStartX = 0;
   let touchStartY = 0;
@@ -685,9 +828,9 @@
 
     if (Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffX) > 50) {
       if (diffX < 0) {
-        navigateMember(1);  // 다음 가정
+        navigateMember(1);  
       } else {
-        navigateMember(-1); // 이전 가정
+        navigateMember(-1); 
       }
     }
   }, { passive: true });
@@ -775,7 +918,7 @@
     initTemperature();
     loadData();
 
-    document.getElementById('btn-back').addEventListener('click', showMainView);
+    document.getElementById('btn-back').addEventListener('click', () => showMainView(false));
     document.getElementById('btn-prev').addEventListener('click', () => navigateMember(-1));
     document.getElementById('btn-next').addEventListener('click', () => navigateMember(1));
     document.getElementById('btn-font-toggle').addEventListener('click', toggleFontSize);
